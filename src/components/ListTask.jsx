@@ -11,7 +11,7 @@ const ListTask = ({ tasks, setTasks }) => {
     useEffect(() => {
         if (tasks) {
             const fTodos = tasks.filter((task) => task.status === "todo");
-            const fInProgress = tasks.filter((task) => task.status === "inProgress");
+            const fInProgress = tasks.filter((task) => task.status === "inprogress");
             const fClosed = tasks.filter((task) => task.status === "closed");
 
             setTodos(fTodos);
@@ -58,21 +58,33 @@ const Section = ({ status, tasks, setTasks, todos, inProgress, closed }) => {
     let text = "Todo";
     let bg = "bg-slate-500";
     let taskToMap = todos;
+
     if (status === "inprogress") {
-        text = "In Progress",
-            bg = "bg-purple-500",
+        text = "In Progress";
+            bg = "bg-purple-500";
             taskToMap = inProgress;
     }
+
     if (status === "closed") {
         text = "Closed";
         bg = "bg-green-500";
         taskToMap = closed;
     }
     const addItemToSection = (id) => {
-        console.log("droped", id);
+        setTasks((prev) => {
+            const mTask = prev.map((t) => {
+                if(t.id === id){
+                    return {...t, status: status};
+                }
+                return t;
+            });
+            localStorage.setItem("tasks", JSON.stringify(mTask));
+            toast("Task Status Changed", {icon: "✔"});
+            return mTask;
+        })
     };
     return (
-        <div ref={drop} className={`w-64`}>
+        <div ref={drop} className={`w-64 rounded-md p-2 ${isOver ? "bg-slate-200" : ""}`}>
             <Header text={text} bg={bg} count={taskToMap.length} />
             {
                 taskToMap.length > 0 && taskToMap.map((task) => <Task key={task.id} task={task} tasks={tasks} setTasks={setTasks} />)

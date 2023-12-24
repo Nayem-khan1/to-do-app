@@ -7,10 +7,11 @@ import ListTask from './components/ListTask';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
+  // Get all tasks from local storage
   useEffect(() => {
     setTasks(JSON.parse(localStorage.getItem("tasks")))
   }, []);
-  console.log(tasks);
+
   return (
     <DndProvider backend={HTML5Backend}>
     <Toaster></Toaster>
